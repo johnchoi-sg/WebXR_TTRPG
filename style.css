@@ -1,0 +1,84 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden;
+    background: #000;
+    color: #fff;
+}
+
+#info {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 2rem;
+    border-radius: 10px;
+    max-width: 90%;
+}
+
+#info h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #00ff88;
+}
+
+#status {
+    margin: 1rem 0;
+    font-size: 1rem;
+}
+
+#ar-button {
+    background: linear-gradient(135deg, #00ff88, #00cc66);
+    color: #000;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+}
+
+#ar-button:hover:not(:disabled) {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+}
+
+#ar-button:disabled {
+    background: #666;
+    color: #999;
+    cursor: not-allowed;
+}
+
+#instructions {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    padding: 1rem 2rem;
+    border-radius: 10px;
+    z-index: 99;
+}
+
+.hidden {
+    display: none;
+}
+
+/* AR Session Active */
+body.ar-active #info {
+    display: none;
+}
+
+body.ar-active #instructions {
+    display: block;
+}
