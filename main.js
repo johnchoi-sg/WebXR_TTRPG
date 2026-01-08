@@ -63,53 +63,30 @@ function handleTrackingChanged(event) {
 }
 
 // Initialize the app
-console.log('=== App Starting ===');
-console.log('Script loaded at:', new Date().toISOString());
-
-// Update status to show script is running
-statusText.textContent = 'Loading...';
-statusText.innerHTML += '<br><small>Script is running</small>';
-
 init();
 
 // Also check after a delay to catch late Variant Launch initialization
 setTimeout(() => {
-    console.log('=== Delayed check (1 second) ===');
-    if (arButton && !arButton.disabled) {
-        console.log('AR button already enabled, skipping recheck');
+    if ('xr' in navigator && !arButton.disabled) {
+        // Already initialized
         return;
     }
     console.log('Rechecking WebXR support...');
     checkWebXRSupport();
 }, 1000);
 
-// Final fallback check
-setTimeout(() => {
-    console.log('=== Final check (3 seconds) ===');
-    if (arButton && arButton.disabled && statusText.textContent === 'Initializing...') {
-        console.error('Still stuck on initializing - forcing recheck');
-        statusText.textContent = 'Retrying...';
-        checkWebXRSupport();
-    }
-}, 3000);
-
 function checkWebXRSupport() {
-    console.log('=== Checking WebXR Support ===');
-    console.log('navigator.xr exists:', 'xr' in navigator);
-    console.log('User Agent:', navigator.userAgent);
-    
     // Check for WebXR support
     if ('xr' in navigator) {
         console.log('navigator.xr found, checking session support...');
         navigator.xr.isSessionSupported('immersive-ar').then((supported) => {
-            console.log('immersive-ar supported:', supported);
             if (supported) {
+                console.log('immersive-ar supported!');
                 statusText.textContent = 'AR Ready!';
                 arButton.disabled = false;
-                // Remove old listener if exists
-                arButton.removeEventListener('click', onARButtonClick);
                 arButton.addEventListener('click', onARButtonClick);
             } else {
+                console.log('immersive-ar not supported');
                 statusText.textContent = 'AR not supported on this device';
                 statusText.innerHTML += '<br><small>Requires Android (ARCore) or iOS 14.5+ device</small>';
             }
@@ -119,7 +96,7 @@ function checkWebXRSupport() {
             statusText.innerHTML += '<br><small>' + error.message + '</small>';
         });
     } else {
-        console.log('navigator.xr not found - WebXR not available');
+        console.log('navigator.xr not found');
         statusText.textContent = 'WebXR not available';
         statusText.innerHTML += '<br><small>Please use Chrome/Edge on Android or Safari on iOS</small>';
     }
