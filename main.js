@@ -13,11 +13,21 @@ const arButton = document.getElementById('ar-button');
 const statusText = document.getElementById('status');
 
 // Variant Launch initialization
+let vLaunchReady = false;
+
 window.addEventListener('vlaunch-initialized', (event) => {
     console.log('Variant Launch initialized:', event.detail);
+    vLaunchReady = true;
+    
     if (event.detail.launchRequired) {
         console.log('iOS device detected - Variant Launch required');
         statusText.textContent = 'iOS detected - Preparing AR...';
+    }
+    
+    // Re-check WebXR support after Variant Launch is ready
+    if (event.detail.webXRStatus === 'supported') {
+        console.log('WebXR now supported via Variant Launch');
+        checkWebXRSupport();
     }
 });
 
@@ -55,15 +65,28 @@ function handleTrackingChanged(event) {
 // Initialize the app
 init();
 
-function init() {
+// Also check after a delay to catch late Variant Launch initialization
+setTimeout(() => {
+    if ('xr' in navigator && !arButton.disabled) {
+        // Already initialized
+        return;
+    }
+    console.log('Rechecking WebXR support...');
+    checkWebXRSupport();
+}, 1000);
+
+function checkWebXRSupport() {
     // Check for WebXR support
     if ('xr' in navigator) {
+        console.log('navigator.xr found, checking session support...');
         navigator.xr.isSessionSupported('immersive-ar').then((supported) => {
             if (supported) {
+                console.log('immersive-ar supported!');
                 statusText.textContent = 'AR Ready!';
                 arButton.disabled = false;
                 arButton.addEventListener('click', onARButtonClick);
             } else {
+                console.log('immersive-ar not supported');
                 statusText.textContent = 'AR not supported on this device';
                 statusText.innerHTML += '<br><small>Requires Android (ARCore) or iOS 14.5+ device</small>';
             }
@@ -73,9 +96,14 @@ function init() {
             statusText.innerHTML += '<br><small>' + error.message + '</small>';
         });
     } else {
+        console.log('navigator.xr not found');
         statusText.textContent = 'WebXR not available';
         statusText.innerHTML += '<br><small>Please use Chrome/Edge on Android or Safari on iOS</small>';
     }
+}
+
+function init() {
+    checkWebXRSupport();
 
     // Create scene
     scene = new THREE.Scene();
