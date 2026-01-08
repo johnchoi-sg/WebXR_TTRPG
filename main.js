@@ -24,12 +24,22 @@ const arButton = document.getElementById('ar-button');
 const statusText = document.getElementById('status');
 
 // Variant Launch initialization (only if enabled)
+let vLaunchInitialized = false;
+
 if (config.enableVariantLaunch) {
     window.addEventListener('vlaunch-initialized', (event) => {
         console.log('Variant Launch initialized:', event.detail);
+        vLaunchInitialized = true;
+        
         if (event.detail.launchRequired) {
             console.log('iOS device detected - Variant Launch required');
             statusText.textContent = 'iOS detected - Preparing AR...';
+        }
+        
+        // Re-check WebXR now that Variant Launch is ready
+        if (event.detail.webXRStatus === 'supported') {
+            console.log('WebXR now available via Variant Launch');
+            init();
         }
     });
 } else {
@@ -70,7 +80,19 @@ function handleTrackingChanged(event) {
 }
 
 // Initialize the app
-init();
+// Wait a bit for Variant Launch SDK to load if enabled
+if (config.enableVariantLaunch) {
+    console.log('Waiting for Variant Launch SDK to initialize...');
+    // Give SDK time to load and inject WebXR polyfill
+    setTimeout(() => {
+        if (!vLaunchInitialized) {
+            console.log('Variant Launch not initialized yet, starting anyway');
+        }
+        init();
+    }, 500);
+} else {
+    init();
+}
 
 function init() {
     // Check for WebXR support
