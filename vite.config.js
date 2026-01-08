@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
+  base: '/WebXR_TTRPG/', // GitHub Pages repository name
   server: {
     host: true, // Allow access from network (important for testing on mobile)
     port: 3000,
