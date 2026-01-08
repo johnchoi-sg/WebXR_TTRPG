@@ -5,18 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="description" content="WebXR AR TTRPG Game for Android and iOS">
     <title>WebXR AR TTRPG</title>
-    <!-- Variant Launch SDK loaded conditionally via config.js -->
-    <script type="module">
-        import { config } from './config.js';
-        if (config.enableVariantLaunch) {
-            const script = document.createElement('script');
-            script.src = `https://launchar.app/sdk/v1?key=${config.variantLaunchKey}&redirect=true`;
-            document.head.appendChild(script);
-            console.log('Variant Launch SDK enabled');
-        } else {
-            console.log('Variant Launch SDK disabled - iOS support not available');
-        }
-    </script>
+    <!-- Variant Launch SDK loaded conditionally from main.js based on config -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>

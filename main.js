@@ -1,6 +1,16 @@
 import * as THREE from 'three';
 import { config } from './config.js';
 
+// Load Variant Launch SDK if enabled
+if (config.enableVariantLaunch) {
+    const script = document.createElement('script');
+    script.src = `https://launchar.app/sdk/v1?key=${config.variantLaunchKey}&redirect=true`;
+    document.head.appendChild(script);
+    console.log('Variant Launch SDK enabled');
+} else {
+    console.log('Variant Launch SDK disabled - iOS support not available');
+}
+
 // Global variables
 let camera, scene, renderer, gl;
 let controller;
