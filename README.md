@@ -1,19 +1,28 @@
 # WebXR AR TTRPG Game
 
-A WebXR-based Augmented Reality game template for Android mobile devices, built with Three.js.
+A WebXR-based Augmented Reality game template for Android and iOS mobile devices, built with Three.js and Variant Launch.
 
 ## Features
 
-- ✨ WebXR AR support for Android devices
+- ✨ WebXR AR support for Android and iOS devices
 - 📱 Mobile-optimized interface
 - 🎮 Interactive object placement using hit-testing
 - 🎲 Example game objects (dice) with animations
 - 🔄 Real-time AR rendering with Three.js
+- 🍎 iOS support via Variant Launch SDK
 
 ## Requirements
 
+### Android
 - **Android device** with ARCore support
 - **Chrome** or **Edge** browser (version 90+)
+
+### iOS
+- **iOS 14.5+** device
+- **Safari** browser or Variant Launch Viewer app
+- Variant Launch SDK (already integrated)
+
+### General
 - **HTTPS connection** (required for WebXR)
 
 ## Setup Instructions
@@ -164,10 +173,10 @@ Modify `style.css` to customize the UI appearance.
 |---------|---------|-----|
 | Chrome  | ✅ Yes  | ❌ No |
 | Edge    | ✅ Yes  | ❌ No |
-| Safari  | N/A     | ⚠️ Limited (WebXR Viewer app) |
+| Safari  | N/A     | ✅ Yes (via Variant Launch) |
 | Firefox | ⚠️ Experimental | ❌ No |
 
-**Note**: iOS support for WebXR is limited. Consider using the WebXR Viewer app or wait for native Safari support.
+**Note**: iOS support is enabled through the [Variant Launch SDK](https://launch.variant3d.com/docs/), which provides WebXR compatibility on iOS devices running iOS 14.5+.
 
 ## Resources
 

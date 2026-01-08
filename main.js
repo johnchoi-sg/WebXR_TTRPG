@@ -12,6 +12,46 @@ let placedObjects = [];
 const arButton = document.getElementById('ar-button');
 const statusText = document.getElementById('status');
 
+// Variant Launch initialization
+window.addEventListener('vlaunch-initialized', (event) => {
+    console.log('Variant Launch initialized:', event.detail);
+    if (event.detail.launchRequired) {
+        console.log('iOS device detected - Variant Launch required');
+        statusText.textContent = 'iOS detected - Preparing AR...';
+    }
+});
+
+// Track AR quality on iOS (Variant Launch)
+document.addEventListener('vlaunch-ar-tracking', (event) => {
+    handleTrackingChanged(event);
+});
+
+function handleTrackingChanged(event) {
+    const trackingState = event.detail.state;
+    console.log('AR Tracking state:', trackingState);
+    
+    switch (trackingState) {
+        case 'normal':
+            // Tracking is working normally - hide any warnings
+            break;
+        case 'limited-excessive-motion':
+            console.warn('Move device more slowly');
+            break;
+        case 'limited-initializing':
+            console.log('Initializing tracking...');
+            break;
+        case 'limited-insufficient-features':
+            console.warn('Point at a surface with more detail');
+            break;
+        case 'limited-relocalizing':
+            console.log('Relocalizing tracking...');
+            break;
+        case 'not-available':
+            console.error('Tracking not available');
+            break;
+    }
+}
+
 // Initialize the app
 init();
 
@@ -25,7 +65,7 @@ function init() {
                 arButton.addEventListener('click', onARButtonClick);
             } else {
                 statusText.textContent = 'AR not supported on this device';
-                statusText.innerHTML += '<br><small>Requires Android device with ARCore support</small>';
+                statusText.innerHTML += '<br><small>Requires Android (ARCore) or iOS 14.5+ device</small>';
             }
         }).catch((error) => {
             console.error('WebXR error:', error);
@@ -34,7 +74,7 @@ function init() {
         });
     } else {
         statusText.textContent = 'WebXR not available';
-        statusText.innerHTML += '<br><small>Please use Chrome or Edge on Android</small>';
+        statusText.innerHTML += '<br><small>Please use Chrome/Edge on Android or Safari on iOS</small>';
     }
 
     // Create scene
@@ -81,11 +121,16 @@ function init() {
 function onARButtonClick() {
     const sessionInit = {
         requiredFeatures: ['hit-test'],
-        optionalFeatures: ['dom-overlay'],
+        optionalFeatures: ['dom-overlay', 'anchors'],
         domOverlay: { root: document.body }
     };
 
-    navigator.xr.requestSession('immersive-ar', sessionInit).then(onSessionStarted);
+    navigator.xr.requestSession('immersive-ar', sessionInit).then(onSessionStarted).catch((error) => {
+        console.error('Failed to start AR session:', error);
+        statusText.textContent = 'Failed to start AR';
+        statusText.innerHTML += '<br><small>' + error.message + '</small>';
+        document.body.classList.remove('ar-active');
+    });
 }
 
 function onSessionStarted(session) {
