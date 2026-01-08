@@ -25,10 +25,16 @@ function init() {
                 arButton.addEventListener('click', onARButtonClick);
             } else {
                 statusText.textContent = 'AR not supported on this device';
+                statusText.innerHTML += '<br><small>Requires Android device with ARCore support</small>';
             }
+        }).catch((error) => {
+            console.error('WebXR error:', error);
+            statusText.textContent = 'Error checking AR support';
+            statusText.innerHTML += '<br><small>' + error.message + '</small>';
         });
     } else {
         statusText.textContent = 'WebXR not available';
+        statusText.innerHTML += '<br><small>Please use Chrome or Edge on Android</small>';
     }
 
     // Create scene
